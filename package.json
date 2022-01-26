@@ -1,0 +1,10 @@
+{
+  "name": "micromorph",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --format=esm --outfile=dist/index.mjs --minify"
+  },
+  "devDependencies": {
+    "esbuild": "^0.14.14"
+  }
+}g
