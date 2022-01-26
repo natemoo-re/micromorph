@@ -31,7 +31,6 @@ function attributes(from: Element, to: Element) {
   return patches;
 }
 
-const s = new XMLSerializer();
 function children(from: Element, to: Element) {
   const patches = [];
   const len = Math.max(from.childNodes.length, to.childNodes.length);

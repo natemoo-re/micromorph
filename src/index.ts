@@ -1,4 +1,3 @@
-import { NODE_TYPE } from './consts';
 import { diff } from './diff';
 import { patch } from './patch';
 
