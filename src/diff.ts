@@ -1,21 +1,6 @@
 import { NODE_TYPE, ACTION } from './consts';
 import * as same from './compare';
 
-function unchanged(from: Node, to: Node): boolean {
-  if (same.type(from, to)) {
-    if (
-      from.nodeType === NODE_TYPE.COMMENT ||
-      from.nodeType === NODE_TYPE.TEXT
-    ) {
-      return same.value(from, to);
-    }
-    if (from.nodeType === NODE_TYPE.ELEMENT) {
-      return same.name(from as Element, to as Element);
-    }
-  }
-  return from.isSameNode(to);
-}
-
 function attributes(from: Element, to: Element) {
   if (from.attributes.length === 0 && to.attributes.length === 0) {
     return [];
@@ -46,10 +31,11 @@ function attributes(from: Element, to: Element) {
   return patches;
 }
 
+const s = new XMLSerializer();
 function children(from: Element, to: Element) {
   const patches = [];
   const len = Math.max(from.childNodes.length, to.childNodes.length);
-
+  // TODO: improve <head> diffing by checking for duplicates
   for (let i = 0; i < len; i++) {
     const a = from.childNodes.item(i);
     const b = to.childNodes.item(i);
