@@ -2,7 +2,7 @@
   "name": "micromorph",
   "version": "0.0.0",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --format=esm --outfile=dist/index.mjs --minify"
+    "build": "esbuild src/index.ts --bundle --format=esm --target=es2020 --outfile=dist/index.js --minify"
   },
   "devDependencies": {
     "esbuild": "^0.14.14"
