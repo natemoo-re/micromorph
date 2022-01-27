@@ -6,6 +6,11 @@
   "exports": {
     ".": "./index.mjs"
   },
+  "files": [
+    "./index.mjs",
+    "./types.d.ts",
+    "./dist/index.js"
+  ],
   "scripts": {
     "build": "esbuild src/index.ts --bundle --format=esm --target=es2020 --outfile=dist/index.js --minify",
     "types": "tsc src/index.ts",
