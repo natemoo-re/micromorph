@@ -1,15 +1,15 @@
 {
   "name": "micromorph",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "main": "./index.mjs",
   "types": "./types.d.ts",
   "exports": {
     ".": "./index.mjs"
   },
   "files": [
-    "./index.mjs",
-    "./types.d.ts",
-    "./dist/index.js"
+    "index.mjs",
+    "types.d.ts",
+    "dist/index.js"
   ],
   "scripts": {
     "build": "esbuild src/index.ts --bundle --format=esm --target=es2020 --outfile=dist/index.js --minify",
