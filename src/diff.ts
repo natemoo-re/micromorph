@@ -1,4 +1,4 @@
-import { NODE_TYPE_ELEMENT, NODE_TYPE_DOCUMENT, ACTION_CREATE, ACTION_REMOVE, ACTION_REPLACE, ACTION_UPDATE, ACTION_SET_ATTR, ACTION_REMOVE_ATTR } from './consts';
+import { NODE_TYPE_ELEMENT, NODE_TYPE_TEXT, NODE_TYPE_DOCUMENT, ACTION_CREATE, ACTION_REMOVE, ACTION_REPLACE, ACTION_UPDATE, ACTION_SET_ATTR, ACTION_REMOVE_ATTR } from './consts';
 import * as same from './compare';
 
 function attributes(from: Element, to: Element) {
@@ -118,6 +118,11 @@ export function diff(from: Node | undefined, to: Node | undefined) {
   }
 
   if (same.type(from, to)) {
+    if (from.nodeType === NODE_TYPE_TEXT) {
+      const a = from.nodeValue;
+      const b = to.nodeValue;
+      if (a.trim().length === 0 && b.trim().length === 0) return;
+    }
     if (
       from.nodeType === NODE_TYPE_ELEMENT
     ) {
