@@ -1,12 +1,12 @@
-import morph from './src/index';
-import { normalizeRelativeURLs } from './src/utils';
+import morph from '../src/index';
+import { normalizeRelativeURLs } from '../src/utils';
 
 const a = `
 <head>
+<link href="../main.css" rel="stylesheet" />
 <title>A | Micromorph</title>
 <link href="https://cdn.skypack.dev/sanitize.css" rel="stylesheet" />
 <link href="https://unpkg.com/sanitize.css/typography.css" rel="stylesheet" />
-<link href="../main.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -16,14 +16,15 @@ const a = `
     <h1>NO</h1>
   </div>
 </div>
+<script type="module" src="/index.ts"></script>
 </body>
 `;
 
 const b = `
 <head>
 <title>B | Micromorph</title>
-<link href="https://cdn.skypack.dev/sanitize.css" rel="stylesheet" />
 <link href="https://unpkg.com/sanitize.css/typography.css" rel="stylesheet" />
+<link href="https://cdn.skypack.dev/sanitize.css" rel="stylesheet" />
 <link href="../../main.css" rel="stylesheet" />
 </head>
 
@@ -34,15 +35,16 @@ const b = `
     <h1>YES</h1>
   </div>
 </div>
+<script type="module" src="/index.ts"></script>
 </body>
 `;
 
 const c = `
 <head>
 <title>C | Micromorph</title>
-<link href="https://cdn.skypack.dev/sanitize.css" rel="stylesheet" />
-<link href="https://unpkg.com/sanitize.css/typography.css" rel="stylesheet" />
 <link href="../../../main.css" rel="stylesheet" />
+<link href="https://unpkg.com/sanitize.css/typography.css" rel="stylesheet" />
+<link href="https://cdn.skypack.dev/sanitize.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -51,6 +53,7 @@ const c = `
   <h1>MAYBE</h1>
   <h2>Haha!</h2>
 </div>
+<script type="module" src="/index.ts"></script>
 </body>`;
 
 const p = new DOMParser();
@@ -63,10 +66,8 @@ const bases = [
 ];
 let i = 0;
 
-setTimeout(() => {
-  setInterval(() => {
-    normalizeRelativeURLs(docs[i], bases[i]);
-    morph(document, docs[i]);
-    i = i === 2 ? 0 : i + 1;
-  }, 2500);
-}, 5000);
+setInterval(() => {
+  normalizeRelativeURLs(docs[i], bases[i]);
+  morph(document, docs[i]);
+  i = i === 2 ? 0 : i + 1;
+}, 2500);
