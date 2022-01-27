@@ -1,17 +1,4 @@
-export function name(from: Element, to: Element) {
-  if (from.nodeName === to.nodeName) {
-    return true;
-  }
-  if (from.nodeName.toUpperCase() === to.nodeName.toUpperCase()) {
-    return true;
-  }
-  return false;
-}
-
-export function type(from: Node, to: Node) {
-  return from.nodeType === to.nodeType;
-}
-
-export function value(from: Node, to: Node) {
-  return from.nodeValue === to.nodeValue;
-}
+const compare = (attr: string) => (from: Node, to: Node) => from[`node${attr}`] === to[`node${attr}`];
+export const name = compare('Name');
+export const type = compare('Type');
+export const value = compare('Value');
