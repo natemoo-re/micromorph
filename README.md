@@ -1,3 +1,3 @@
 # micromorph
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/micromorph)
+<small>A very tiny library for diffing DOM nodes.</small>

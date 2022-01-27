@@ -9,7 +9,7 @@
   "scripts": {
     "build": "esbuild src/index.ts --bundle --format=esm --target=es2020 --outfile=dist/index.js --minify",
     "types": "tsc src/index.ts",
-    "serve": "vite public"
+    "serve": "vite demo"
   },
   "devDependencies": {
     "esbuild": "^0.14.14",
