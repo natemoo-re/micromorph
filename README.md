@@ -18,16 +18,19 @@ import diff from 'micromorph';
 diff(fromNode, toNode);
 ```
 
-#### Want to update the current `document` to match a new `document`?
+#### Want to update the current `document` to match a new `document`, maybe from a string?
 
 Micromorph is smart enough to handle full document diffing while avoiding FOUC.
 
-This feature powers HMR in [Astro](https://github.com/withastro/astro)
+> This feature powers HMR in [Astro](https://github.com/withastro/astro)
 
 ```js
 import diff from 'micromorph';
+const p = new DOMParser();
 
-diff(document, toDocument);
+const newDoc = p.parseFromString(`<h1>Hello world!</h1>`, 'text/html');
+
+diff(document, newDoc);
 ```
 
 #### Want to turn your MPA into an SPA?
