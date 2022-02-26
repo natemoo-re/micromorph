@@ -51,6 +51,13 @@ function getKey(el: Element) {
   return s.serializeToString(el);
 }
 
+function clone(node: Node) {
+  if (node.nodeType === NODE_TYPE_ELEMENT && (node as Element).hasAttribute('data-persist')) {
+    return node;
+  }
+  return node.cloneNode(true);
+}
+
 function uniqueChildren(from: Element, to: Element) {
   if (from.children.length === 0 && to.children.length === 0) {
     return [];
@@ -67,10 +74,10 @@ function uniqueChildren(from: Element, to: Element) {
     const fromEl = remove.get(key);
     if (fromEl) {
       if (s.serializeToString(child) !== s.serializeToString(fromEl)) {
-        update.set(key, child.cloneNode(true));
+        update.set(key, clone(child));
       }
     } else {
-      add.set(key, child.cloneNode(true));
+      add.set(key, clone(child));
     }
     remove.delete(key);
   }
@@ -92,7 +99,7 @@ function uniqueChildren(from: Element, to: Element) {
     patches.push(undefined);
   }
   for (const node of add.values()) {
-    patches.push({ type: ACTION_CREATE, node: node.cloneNode(true) });
+    patches.push({ type: ACTION_CREATE, node: clone(node) });
   }
   return patches;
 }
@@ -110,7 +117,7 @@ function children(from: Element, to: Element) {
 
 export function diff(from: Node | undefined, to: Node | undefined) {
   if (!from) {
-    return { type: ACTION_CREATE, node: to.cloneNode(true) };
+    return { type: ACTION_CREATE, node: clone(to) };
   }
 
   if (!to) {
@@ -136,7 +143,7 @@ export function diff(from: Node | undefined, to: Node | undefined) {
       }
       return {
         type: ACTION_REPLACE,
-        node: to.cloneNode(true),
+        node: clone(to),
       };
     } else if (from.nodeType === NODE_TYPE_DOCUMENT) {
       return diff(
@@ -154,6 +161,6 @@ export function diff(from: Node | undefined, to: Node | undefined) {
 
   return {
     type: ACTION_REPLACE,
-    node: to.cloneNode(true),
+    node: clone(to),
   };
 }
