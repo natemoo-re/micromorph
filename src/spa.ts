@@ -25,8 +25,10 @@ const getUrl = ({ target }: Event): URL | undefined => {
   return new URL(href);
 };
 
+let noop = () => {};
 let p: DOMParser;
-async function navigate(url: URL, isBack: boolean = false) {
+async function navigate(url: URL, isBack: boolean = false, opts: Options) {
+  const { beforeDiff = noop, afterDiff = noop } = opts;
   p = p || new DOMParser();
   if (!isBack) {
     history.pushState({}, "", url);
@@ -40,17 +42,24 @@ async function navigate(url: URL, isBack: boolean = false) {
   if (!contents) return;
   const html = p.parseFromString(contents, "text/html");
   normalizeRelativeURLs(html, url);
+  beforeDiff(html);
   micromorph(document, html);
+  afterDiff();
 }
 
-export default function listen() {
+interface Options {
+  beforeDiff?: (newDocument: Document) => void|Promise<void>;
+  afterDiff?: () => void|Promise<void>
+}
+
+export default function listen(opts: Options = {}) {
   if (typeof window !== "undefined") {
-    window.addEventListener("click", (event) => {
+    window.addEventListener("click", async (event) => {
       const url = getUrl(event);
       if (!url) return;
       event.preventDefault();
       try {
-        navigate(url);
+        navigate(url, false, opts);
       } catch (e) {
         window.location.assign(url);
       }
@@ -59,7 +68,7 @@ export default function listen() {
     window.addEventListener("popstate", () => {
       if (window.location.hash) return;
       try {
-        navigate(new URL(window.location.toString()), true);
+        navigate(new URL(window.location.toString()), true, opts);
       } catch (e) {
         window.location.reload();
       }
