@@ -11,17 +11,17 @@ function patchAttributes(el, patches: any) {
   }
 }
 
-export function patch(parent: Node, PATCH: any, index: number = -1) {
+export function patch(parent: Node, PATCH: any, child?: Node) {
   if (!PATCH) return;
 
   let el;
   if (parent.nodeType === NODE_TYPE_DOCUMENT) {
     parent = (parent as Document).documentElement;
     el = parent;
-  } else if (index === -1) {
+  } else if (!child) {
     el = parent;
   } else {
-    el = parent.childNodes.item(index);
+    el = child;
   }
 
   switch (PATCH.type) {
@@ -45,7 +45,9 @@ export function patch(parent: Node, PATCH: any, index: number = -1) {
       if (!el) return;
       const { attributes, children } = PATCH;
       patchAttributes(el, attributes);
-      children.forEach((child, index) => patch(el, child, index));
+      // Freeze childNodes before mutating
+      const elements = Array.from(el.childNodes) as Element[];
+      children.forEach((child, index) => patch(el, child, elements[index]));
       return;
     }
   }
