@@ -47,6 +47,12 @@ function getKey(el: Element) {
       if (el.hasAttribute('href')) return `link[href="${el.getAttribute('href')}"]`
       break;
     }
+    case 'SCRIPT': {
+      if (el.hasAttribute('type') && el.hasAttribute('src')) return `script[type="${el.getAttribute('type')}"][src="${el.getAttribute('src')}"]`
+      if (el.hasAttribute('nomodule') && el.hasAttribute('src')) return `script[nomodule][src="${el.getAttribute('src')}"]`
+      if (el.hasAttribute('src')) return `script[src="${el.getAttribute('src')}"]`
+      break;
+    }
   }
   return s.serializeToString(el);
 }
