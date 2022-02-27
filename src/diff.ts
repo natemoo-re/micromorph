@@ -31,7 +31,14 @@ function attributes(from: Element, to: Element) {
   return patches;
 }
 
-const s = new XMLSerializer();
+function serialize(el: Element) {
+  let key = `${el.localName}`;
+  for (const { name, value } of el.attributes) {
+    if (name.startsWith('data-')) continue;
+    key += `[${name}=${value}]`
+  }
+  return key;
+}
 function getKey(el: Element) {
   switch (el.tagName) {
     case 'BASE':
@@ -47,14 +54,8 @@ function getKey(el: Element) {
       if (el.hasAttribute('href')) return `link[href="${el.getAttribute('href')}"]`
       break;
     }
-    case 'SCRIPT': {
-      if (el.hasAttribute('type') && el.hasAttribute('src')) return `script[type="${el.getAttribute('type')}"][src="${el.getAttribute('src')}"]`
-      if (el.hasAttribute('nomodule') && el.hasAttribute('src')) return `script[nomodule][src="${el.getAttribute('src')}"]`
-      if (el.hasAttribute('src')) return `script[src="${el.getAttribute('src')}"]`
-      break;
-    }
   }
-  return s.serializeToString(el);
+  return serialize(el);
 }
 
 function cachebust(src: string): string {
