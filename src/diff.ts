@@ -44,16 +44,36 @@ function getKey(el: Element) {
     }
     case 'LINK': {
       if (el.hasAttribute('rel') && el.hasAttribute('href')) return `link[rel="${el.getAttribute('rel')}"][href="${el.getAttribute('href')}"]`
-      if (el.hasAttribute('href')) return `link[rel="${el.getAttribute('rel')}"][href="${el.getAttribute('href')}"]`
+      if (el.hasAttribute('href')) return `link[href="${el.getAttribute('href')}"]`
       break;
     }
   }
   return s.serializeToString(el);
 }
 
+function cachebust(src: string): string {
+  const [base, query = ''] = src.split('?');
+  const params = new URLSearchParams(query);
+  params.set('t', `${Date.now()}`)
+  return `${base}?${params}`;
+}
+
 function clone(node: Node) {
   if (node.nodeType === NODE_TYPE_ELEMENT && (node as Element).hasAttribute('data-persist')) {
     return node;
+  }
+  if (node.nodeType === NODE_TYPE_ELEMENT && (node as Element).localName === 'script') {
+    // 4.12.1.1: cloneNode persists a <script> elements' loading state
+    // https://html.spec.whatwg.org/multipage/scripting.html#script-processing-model
+    const script = document.createElement('script');
+    for (let { name, value } of (node as Element).attributes) {
+      if (name === 'src') {
+        value = cachebust(value);
+      }
+      script.setAttribute(name, value);
+    }
+    script.innerHTML = (node as Element).innerHTML;
+    return script;
   }
   return node.cloneNode(true);
 }
@@ -86,6 +106,7 @@ function uniqueChildren(from: Element, to: Element) {
       const key = getKey(node as Element);
       if (remove.has(key)) {
         patches.push({ type: ACTION_REMOVE });
+        continue;
       } else if (update.has(key)) {
         const nodeTo = update.get(key);
         patches.push({
@@ -93,8 +114,8 @@ function uniqueChildren(from: Element, to: Element) {
           attributes: attributes(node as Element, nodeTo as Element),
           children: children(node as Element, nodeTo as Element),
         });
+        continue;
       }
-      continue;
     }
     patches.push(undefined);
   }
