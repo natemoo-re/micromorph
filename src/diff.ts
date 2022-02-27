@@ -31,10 +31,10 @@ function attributes(from: Element, to: Element) {
   return patches;
 }
 
-function serialize(el: Element) {
+function serialize(el: Element, data = true) {
   let key = `${el.localName}`;
   for (const { name, value } of el.attributes) {
-    if (name.startsWith('data-')) continue;
+    if (data && name.startsWith('data-')) continue;
     key += `[${name}=${value}]`
   }
   return key;
@@ -100,7 +100,7 @@ function uniqueChildren(from: Element, to: Element) {
     const key = getKey(child);
     const fromEl = remove.get(key);
     if (fromEl) {
-      if (s.serializeToString(child) !== s.serializeToString(fromEl)) {
+      if (serialize(child, false) !== serialize(fromEl, false)) {
         update.set(key, clone(child));
       }
     } else {
