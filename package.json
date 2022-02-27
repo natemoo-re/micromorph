@@ -1,6 +1,6 @@
 {
   "name": "micromorph",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "./index.mjs",
   "types": "./types.d.ts",
   "exports": {
