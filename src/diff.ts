@@ -37,6 +37,7 @@ function serialize(el: Element, data = true) {
     if (data && name.startsWith('data-')) continue;
     key += `[${name}=${value}]`
   }
+  key += el.innerHTML;
   return key;
 }
 function getKey(el: Element) {
