@@ -30,19 +30,23 @@ let p: DOMParser;
 async function navigate(url: URL, isBack: boolean = false, opts: Options) {
   const { beforeDiff = noop, afterDiff = noop } = opts;
   p = p || new DOMParser();
-  if (!isBack) {
-    history.pushState({}, "", url);
-    window.scrollTo({ top: 0 });
-  }
   const contents = await fetch(`${url}`)
     .then((res) => res.text())
     .catch(() => {
       window.location.assign(url);
     });
   if (!contents) return;
+  if (!isBack) {
+    history.pushState({}, "", url);
+    window.scrollTo({ top: 0 });
+  }
   const html = p.parseFromString(contents, "text/html");
   normalizeRelativeURLs(html, url);
   beforeDiff(html);
+  const title = html.querySelector("title");
+  if (title) {
+    document.title = title.text;
+  }
   await micromorph(document, html);
   afterDiff();
 }
