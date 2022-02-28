@@ -6,10 +6,10 @@ export function normalizeRelativeURLs(
   el: Element | Document,
   base: string | URL
 ) {
-  el.querySelectorAll(':is([href^="./"], [href^="../"])').forEach((item) =>
+  el.querySelectorAll('[href^="./"], [href^="../"]').forEach((item) =>
     update(item, 'href', base)
   );
-  el.querySelectorAll(':is([src^="./"], [src^="../"])').forEach((item) =>
+  el.querySelectorAll('[src^="./"], [src^="../"]').forEach((item) =>
     update(item, 'src', base)
   );
 }
