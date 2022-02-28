@@ -41,12 +41,12 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
     window.scrollTo({ top: 0 });
   }
   const html = p.parseFromString(contents, "text/html");
+  normalizeRelativeURLs(html, url);
+  beforeDiff(html);
   const title = html.querySelector("title");
   if (title) {
     document.title = title.text;
   }
-  normalizeRelativeURLs(html, url);
-  beforeDiff(html);
   await micromorph(document, html);
   afterDiff();
 }
