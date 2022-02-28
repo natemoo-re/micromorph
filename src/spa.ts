@@ -43,7 +43,7 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
   const html = p.parseFromString(contents, "text/html");
   normalizeRelativeURLs(html, url);
   beforeDiff(html);
-  micromorph(document, html);
+  await micromorph(document, html);
   afterDiff();
 }
 

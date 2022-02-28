@@ -11,7 +11,7 @@ function patchAttributes(el, patches: any) {
   }
 }
 
-export function patch(parent: Node, PATCH: any, child?: Node) {
+export async function patch(parent: Node, PATCH: any, child?: Node) {
   if (!PATCH) return;
 
   let el;
@@ -27,19 +27,23 @@ export function patch(parent: Node, PATCH: any, child?: Node) {
   switch (PATCH.type) {
     case ACTION_CREATE: {
       const { node } = PATCH;
-      return parent.appendChild(node);
+      parent.appendChild(node);
+      return;
     }
     case ACTION_REMOVE: {
       if (!el) return;
-      return parent.removeChild(el);
+      parent.removeChild(el);
+      return;
     }
     case ACTION_REPLACE: {
       if (!el) return;
       const { node, value } = PATCH;
       if (typeof value === 'string') {
-        return (el.nodeValue = value);
+        el.nodeValue = value;
+        return;
       }
-      return el.replaceWith(node);
+      el.replaceWith(node);
+      return;
     }
     case ACTION_UPDATE: {
       if (!el) return;
@@ -47,7 +51,7 @@ export function patch(parent: Node, PATCH: any, child?: Node) {
       patchAttributes(el, attributes);
       // Freeze childNodes before mutating
       const elements = Array.from(el.childNodes) as Element[];
-      children.forEach((child, index) => patch(el, child, elements[index]));
+      await Promise.all(children.map((child, index) => patch(el, child, elements[index])));
       return;
     }
   }

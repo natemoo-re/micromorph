@@ -1,1 +1,1 @@
-export default function micromorph(from: Node, to: Node): void;
+export default function micromorph(from: Node, to: Node): Promise<void>;

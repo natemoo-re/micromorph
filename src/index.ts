@@ -1,7 +1,7 @@
 import { diff } from './diff';
 import { patch } from './patch';
 
-export default function micromorph(from: Node, to: Node) {
+export default function micromorph(from: Node, to: Node): Promise<void> {
   const patches = diff(from, to);
-  patch(from, patches);
+  return patch(from, patches);
 }
