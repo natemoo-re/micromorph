@@ -13,6 +13,7 @@
     "spa.d.ts",
     "dist/"
   ],
+  "packageManager": "pnpm@6.32.3",
   "scripts": {
     "build": "pnpm run build:index && pnpm run build:spa",
     "build:index": "esbuild src/index.ts --bundle --format=esm --target=es2020 --outfile=dist/index.js --minify",
