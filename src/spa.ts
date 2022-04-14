@@ -16,10 +16,12 @@ const isLocalUrl = (href: string) => {
   } catch (e) {}
   return false;
 };
-const getUrl = ({ target }: Event): URL | undefined => {
+const getUrl = ({ target }: Event, opts: Options): URL | undefined => {
   if (!isElement(target)) return;
   const a = target.closest("a");
   if (!a) return;
+  if (typeof opts.include === 'string' && !a.matches(opts.include)) return;
+  if (typeof opts.include === 'function' && !opts.include(a)) return;
   const { href } = a;
   if (!isLocalUrl(href)) return;
   return new URL(href);
@@ -38,7 +40,10 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
   if (!contents) return;
   if (!isBack) {
     history.pushState({}, "", url);
-    window.scrollTo({ top: 0 });
+    // undefined defaults to true
+    if (opts.scrollToTop ?? true) {
+      window.scrollTo({ top: 0 });
+    }
   }
   const html = p.parseFromString(contents, "text/html");
   normalizeRelativeURLs(html, url);
@@ -53,13 +58,15 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
 
 interface Options {
   beforeDiff?: (newDocument: Document) => void|Promise<void>;
-  afterDiff?: () => void|Promise<void>
+  afterDiff?: () => void|Promise<void>;
+  include?: string | ((element: HTMLAnchorElement) => boolean);
+  scrollToTop?: boolean;
 }
 
 export default function listen(opts: Options = {}) {
   if (typeof window !== "undefined") {
     window.addEventListener("click", async (event) => {
-      const url = getUrl(event);
+      const url = getUrl(event, opts);
       if (!url) return;
       event.preventDefault();
       try {
