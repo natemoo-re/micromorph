@@ -20,6 +20,7 @@
     "demo": "pnpm run build --filter demo && pnpm run preview --filter demo"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.22.0",
     "esbuild": "^0.14.14"
   },
   "volta": {
