@@ -1,5 +1,11 @@
 # micromorph
 
+## 0.2.2
+
+### Patch Changes
+
+- a8cab71: Add license (MIT)
+
 ## 0.2.1
 
 ### Patch Changes
