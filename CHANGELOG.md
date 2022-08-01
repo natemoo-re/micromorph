@@ -1,5 +1,11 @@
 # micromorph
 
+## 0.3.1
+
+### Patch Changes
+
+- f472e4f: remove logs, support scrollToTop option
+
 ## 0.3.0
 
 ### Minor Changes
