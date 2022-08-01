@@ -18,7 +18,12 @@ export default function listen(opts: Options = {}) {
       }
       const src = new URL(location.toString());
       const dest = new URL(e.destination.url);
-      console.log(e, { src, dest });
+      if (src.toString() === dest.toString()) {
+        if (opts.scrollToTop ?? true) {
+          window.scrollTo({ top: 0 });
+        }
+        return;
+      }
       const { beforeDiff = noop, afterDiff = noop } = opts;
       p = p || new DOMParser();
       async function navigate() {
@@ -26,11 +31,15 @@ export default function listen(opts: Options = {}) {
         const html = p.parseFromString(contents, "text/html");
         normalizeRelativeURLs(html, dest);
         beforeDiff(html);
+        
         const title = html.querySelector("title");
         if (title) {
           document.title = title.text;
         }
         await micromorph(document, html);
+        if (opts.scrollToTop ?? true) {
+          window.scrollTo({ top: 0 });
+        }
         afterDiff();
       }
       e.transitionWhile(navigate())
