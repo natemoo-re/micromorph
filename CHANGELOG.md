@@ -1,5 +1,11 @@
 # micromorph
 
+## 0.3.0
+
+### Minor Changes
+
+- 5502cd9: Add `micromorph/nav` entrypoint, which uses the upcoming Navigation API
+
 ## 0.2.2
 
 ### Patch Changes
