@@ -5,19 +5,22 @@
   "types": "./types.d.ts",
   "exports": {
     ".": "./index.mjs",
-    "./spa": "./dist/spa.js"
+    "./spa": "./dist/spa.js",
+    "./nav": "./dist/nav.js"
   },
   "files": [
     "index.mjs",
     "index.d.ts",
     "spa.d.ts",
+    "nav.d.ts",
     "dist/"
   ],
   "packageManager": "pnpm@6.32.3",
   "scripts": {
-    "build": "pnpm run build:index && pnpm run build:spa",
+    "build": "pnpm run build:index && pnpm run build:spa && pnpm run build:nav",
     "build:index": "esbuild src/index.ts --bundle --format=esm --target=es2020 --outfile=dist/index.js --minify",
     "build:spa": "esbuild src/spa.ts --bundle --format=esm --target=es2020 --outfile=dist/spa.js --minify",
+    "build:nav": "esbuild src/nav.ts --bundle --format=esm --target=es2020 --outfile=dist/nav.js --minify",
     "demo": "pnpm --filter demo run build && pnpm --filter demo run preview"
   },
   "devDependencies": {

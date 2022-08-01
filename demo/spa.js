@@ -1,2 +1,2 @@
-import listen from 'micromorph/spa';
+import listen from 'micromorph/nav';
 listen();
