@@ -1,5 +1,6 @@
 import { normalizeRelativeURLs } from "./utils";
 import micromorph from "./index.js";
+import './announcer.js';
 
 let noop = () => {};
 let p: DOMParser;
@@ -10,6 +11,7 @@ interface Options {
   scrollToTop?: boolean;
 }
 
+let announcer = document.createElement('route-announcer');
 export default function listen(opts: Options = {}) {
   if (typeof window !== "undefined" && 'navigation' in window) {
     navigation.addEventListener('navigate', (e) => {
@@ -32,15 +34,24 @@ export default function listen(opts: Options = {}) {
         normalizeRelativeURLs(html, dest);
         beforeDiff(html);
         
-        const title = html.querySelector("title");
+        let title = html.querySelector("title")?.textContent;
         if (title) {
-          document.title = title.text;
+          document.title = title;
+        } else {
+          const h1 = document.querySelector('h1');
+          title = h1?.innerText ?? h1?.textContent ?? dest.pathname;
         }
+        if (announcer.textContent !== title) {
+          announcer.textContent = title;
+        }
+        announcer.dataset.persist = '';
+        html.body.appendChild(announcer);
         await micromorph(document, html);
         if (opts.scrollToTop ?? true) {
           window.scrollTo({ top: 0 });
         }
         afterDiff();
+        delete announcer.dataset.persist;
       }
       e.transitionWhile(navigate())
     });

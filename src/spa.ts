@@ -1,9 +1,10 @@
 import { normalizeRelativeURLs } from "./utils";
 import { NODE_TYPE_ELEMENT } from "./consts";
 import micromorph from "./index.js";
+import './announcer.js';
 
-const isElement = (target: EventTarget): target is Element =>
-  (target as Node).nodeType === NODE_TYPE_ELEMENT;
+let announcer = document.createElement('route-announcer');
+const isElement = (target: EventTarget | null): target is Element => (target as Node)?.nodeType === NODE_TYPE_ELEMENT;
 const isLocalUrl = (href: string) => {
   try {
     const url = new URL(href);
@@ -16,15 +17,16 @@ const isLocalUrl = (href: string) => {
   } catch (e) {}
   return false;
 };
-const getUrl = ({ target }: Event, opts: Options): URL | undefined => {
+const getOpts = ({ target }: Event, opts: Options): { url: URL, scroll?: boolean } | undefined => {
   if (!isElement(target)) return;
   const a = target.closest("a");
   if (!a) return;
   if (typeof opts.include === 'string' && !a.matches(opts.include)) return;
   if (typeof opts.include === 'function' && !opts.include(a)) return;
+  if ('routerIgnore' in a.dataset) return;
   const { href } = a;
   if (!isLocalUrl(href)) return;
-  return new URL(href);
+  return { url: new URL(href), scroll: 'routerNoscroll' in a.dataset ? false : undefined };
 };
 
 let noop = () => {};
@@ -48,12 +50,21 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
   const html = p.parseFromString(contents, "text/html");
   normalizeRelativeURLs(html, url);
   beforeDiff(html);
-  const title = html.querySelector("title");
+  let title = html.querySelector("title")?.textContent;
   if (title) {
-    document.title = title.text;
+    document.title = title;
+  } else {
+    const h1 = document.querySelector('h1');
+    title = h1?.innerText ?? h1?.textContent ?? url.pathname;
   }
+  if (announcer.textContent !== title) {
+    announcer.textContent = title;
+  }
+  announcer.dataset.persist = '';
+  html.body.appendChild(announcer);
   await micromorph(document, html);
   afterDiff();
+  delete announcer.dataset.persist;
 }
 
 interface Options {
@@ -63,14 +74,14 @@ interface Options {
   scrollToTop?: boolean;
 }
 
-export default function listen(opts: Options = {}) {
+export default function createRouter(opts: Options = {}) {
   if (typeof window !== "undefined") {
     window.addEventListener("click", async (event) => {
-      const url = getUrl(event, opts);
+      const { url, scroll: scrollToTop = opts.scrollToTop } = getOpts(event, opts) ?? {};
       if (!url) return;
       event.preventDefault();
       try {
-        navigate(url, false, opts);
+        navigate(url, false, { ...opts, scrollToTop  });
       } catch (e) {
         window.location.assign(url);
       }
@@ -85,5 +96,19 @@ export default function listen(opts: Options = {}) {
       }
       return;
     });
+  }
+  return new class Router {
+    go(pathname: string, options?: Partial<Options>) {
+      const url = new URL(pathname, window.location.toString())
+      return navigate(url, false, { ...opts, ...options })
+    }
+
+    back() {
+      return window.history.back();
+    }
+
+    forward() {
+      return window.history.forward();
+    }
   }
 }
