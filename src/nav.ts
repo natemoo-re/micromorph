@@ -12,7 +12,8 @@ interface Options {
 }
 
 let announcer = document.createElement('route-announcer');
-export default function listen(opts: Options = {}) {
+
+export default function createRouter(opts: Options = {}) {
   if (typeof window !== "undefined" && 'navigation' in window) {
     navigation.addEventListener('navigate', (e) => {
       if (!e.canTransition || e.hashChange || e.downloadRequest !== null) {
@@ -62,4 +63,20 @@ export default function listen(opts: Options = {}) {
       e.intercept(document.startViewTransition(() => navigate()));
     });
   }
+
+  return new class Router {
+    go(pathname: string) {
+      const url = new URL(pathname, window.location.toString())
+      return navigation.navigate(url)
+    }
+
+    back() {
+      return navigation.back();
+    }
+
+    forward() {
+      return navigation.forward();
+    }
+  }
 }
+
