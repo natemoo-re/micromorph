@@ -12,7 +12,6 @@ interface Options {
 }
 
 let announcer = document.createElement('route-announcer');
-let wrapper = document.startViewTransition ?? ((cb) => cb());
 export default function createRouter(opts: Options = {}) {
   if (typeof window !== "undefined" && 'navigation' in window) {
     navigation.addEventListener('navigate', (e) => {
@@ -55,7 +54,7 @@ export default function createRouter(opts: Options = {}) {
         delete announcer.dataset.persist;
       }
 
-      e.intercept(wrapper(() => navigate()));
+      e.intercept(document.startViewTransition(() => navigate()));
     });
   }
 

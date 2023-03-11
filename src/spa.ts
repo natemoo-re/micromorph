@@ -29,13 +29,11 @@ const getOpts = ({ target }: Event, opts: Options): { url: URL, scroll?: boolean
   return { url: new URL(href), scroll: 'routerNoscroll' in a.dataset ? false : undefined };
 };
 
-let wrapper = document.startViewTransition ?? ((cb) => cb());
 let noop = () => {};
 let p: DOMParser;
 async function navigate(url: URL, isBack: boolean = false, opts: Options) {
   const { beforeDiff = noop, afterDiff = noop } = opts;
   p = p || new DOMParser();
-  await wrapper(async () => {
     const contents = await fetch(`${url}`)
       .then((res) => res.text())
       .catch(() => {
@@ -64,10 +62,13 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
     }
     announcer.dataset.persist = '';
     html.body.appendChild(announcer);
-    await micromorph(document, html);
+    if (document.startViewTransition) {
+      await document.startViewTransition(micromorph(document, html))
+    } else {
+    
+    }
     await afterDiff();
     delete announcer.dataset.persist;
-  })
 }
 
 interface Options {
@@ -103,7 +104,7 @@ export default function createRouter(opts: Options = {}) {
   return new class Router {
     go(pathname: string, options?: Partial<Options>) {
       const url = new URL(pathname, window.location.toString())
-      return navigate(url, false, { ...opts, ...options })
+      return await micromorph(document, html);navigate(url, false, { ...opts, ...options })
     }
 
     back() {
