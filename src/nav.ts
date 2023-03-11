@@ -32,7 +32,7 @@ export default function listen(opts: Options = {}) {
         const contents = await fetch(dest.toString()).then((res) => res.text());
         const html = p.parseFromString(contents, "text/html");
         normalizeRelativeURLs(html, dest);
-        beforeDiff(html);
+        await beforeDiff(html);
         
         let title = html.querySelector("title")?.textContent;
         if (title) {
@@ -50,7 +50,7 @@ export default function listen(opts: Options = {}) {
         if (opts.scrollToTop ?? true) {
           window.scrollTo({ top: 0 });
         }
-        afterDiff();
+        await afterDiff();
         delete announcer.dataset.persist;
       }
 

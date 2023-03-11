@@ -49,7 +49,7 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
   }
   const html = p.parseFromString(contents, "text/html");
   normalizeRelativeURLs(html, url);
-  beforeDiff(html);
+  await beforeDiff(html);
   let title = html.querySelector("title")?.textContent;
   if (title) {
     document.title = title;
@@ -67,7 +67,7 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
   } else {
     await micromorph(document, html);
   }
-  afterDiff();
+  await afterDiff();
   delete announcer.dataset.persist;
 }
 
