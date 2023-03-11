@@ -1,5 +1,11 @@
 # micromorph
 
+## 0.4.2
+
+### Patch Changes
+
+- 9b8e241: Revert previous patch
+
 ## 0.4.1
 
 ### Patch Changes
