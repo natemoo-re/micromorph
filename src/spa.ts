@@ -104,7 +104,7 @@ export default function createRouter(opts: Options = {}) {
   return new class Router {
     go(pathname: string, options?: Partial<Options>) {
       const url = new URL(pathname, window.location.toString())
-      return await micromorph(document, html);navigate(url, false, { ...opts, ...options })
+      return navigate(url, false, { ...opts, ...options })
     }
 
     back() {
