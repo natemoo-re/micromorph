@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
+    appType: 'mpa',
     build: {
         rollupOptions: {
             input: {

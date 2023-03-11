@@ -62,7 +62,11 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
   }
   announcer.dataset.persist = '';
   html.body.appendChild(announcer);
-  await micromorph(document, html);
+  if (document.startViewTransition) {
+    await document.startViewTransition(() => micromorph(document, html));
+  } else {
+    await micromorph(document, html);
+  }
   afterDiff();
   delete announcer.dataset.persist;
 }

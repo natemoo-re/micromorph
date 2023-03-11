@@ -53,7 +53,13 @@ export default function listen(opts: Options = {}) {
         afterDiff();
         delete announcer.dataset.persist;
       }
-      e.transitionWhile(navigate())
+
+      if (!document.startViewTransition) {
+        e.intercept(navigate())
+        return;
+      }
+
+      e.intercept(document.startViewTransition(() => navigate()));
     });
   }
 }
