@@ -29,46 +29,45 @@ const getOpts = ({ target }: Event, opts: Options): { url: URL, scroll?: boolean
   return { url: new URL(href), scroll: 'routerNoscroll' in a.dataset ? false : undefined };
 };
 
+let wrapper = document.startViewTransition ?? ((cb) => cb());
 let noop = () => {};
 let p: DOMParser;
 async function navigate(url: URL, isBack: boolean = false, opts: Options) {
   const { beforeDiff = noop, afterDiff = noop } = opts;
   p = p || new DOMParser();
-  const contents = await fetch(`${url}`)
-    .then((res) => res.text())
-    .catch(() => {
-      window.location.assign(url);
-    });
-  if (!contents) return;
-  if (!isBack) {
-    history.pushState({}, "", url);
-    // undefined defaults to true
-    if (opts.scrollToTop ?? true) {
-      window.scrollTo({ top: 0 });
+  await wrapper(async () => {
+    const contents = await fetch(`${url}`)
+      .then((res) => res.text())
+      .catch(() => {
+        window.location.assign(url);
+      });
+    if (!contents) return;
+    if (!isBack) {
+      history.pushState({}, "", url);
+      // undefined defaults to true
+      if (opts.scrollToTop ?? true) {
+        window.scrollTo({ top: 0 });
+      }
     }
-  }
-  const html = p.parseFromString(contents, "text/html");
-  normalizeRelativeURLs(html, url);
-  await beforeDiff(html);
-  let title = html.querySelector("title")?.textContent;
-  if (title) {
-    document.title = title;
-  } else {
-    const h1 = document.querySelector('h1');
-    title = h1?.innerText ?? h1?.textContent ?? url.pathname;
-  }
-  if (announcer.textContent !== title) {
-    announcer.textContent = title;
-  }
-  announcer.dataset.persist = '';
-  html.body.appendChild(announcer);
-  if (document.startViewTransition) {
-    await document.startViewTransition(() => micromorph(document, html));
-  } else {
+    const html = p.parseFromString(contents, "text/html");
+    normalizeRelativeURLs(html, url);
+    await beforeDiff(html);
+    let title = html.querySelector("title")?.textContent;
+    if (title) {
+      document.title = title;
+    } else {
+      const h1 = document.querySelector('h1');
+      title = h1?.innerText ?? h1?.textContent ?? url.pathname;
+    }
+    if (announcer.textContent !== title) {
+      announcer.textContent = title;
+    }
+    announcer.dataset.persist = '';
+    html.body.appendChild(announcer);
     await micromorph(document, html);
-  }
-  await afterDiff();
-  delete announcer.dataset.persist;
+    await afterDiff();
+    delete announcer.dataset.persist;
+  })
 }
 
 interface Options {
