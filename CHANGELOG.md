@@ -1,5 +1,11 @@
 # micromorph
 
+## 0.4.1
+
+### Patch Changes
+
+- f84618e: Treat entire navigation as a transition
+
 ## 0.4.0
 
 ### Minor Changes
