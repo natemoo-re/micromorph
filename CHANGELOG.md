@@ -1,5 +1,20 @@
 # micromorph
 
+## 0.4.0
+
+### Minor Changes
+
+- cbcaa44: Automatically add `route-announcer` element, support `data-router-ignore` and `data-router-noscroll` attributes to opt `a` links out of SPA routing or `scrollToTop` behavior.
+
+  Updates default export of `micromorph/spa` entrypoint to return an instance of `Router` for programatic control.
+
+  Updates default export of `micromorph/nav` entrypoint to return an instance of `Router` for programatic control.
+
+### Patch Changes
+
+- f969b64: Update code to support View Transitions by default
+- 08cd7b5: Await `beforeDiff` and `afterDiff`
+
 ## 0.3.1
 
 ### Patch Changes
