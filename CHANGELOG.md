@@ -1,5 +1,11 @@
 # micromorph
 
+## 0.4.3
+
+### Patch Changes
+
+- Update `startViewTransition` logic
+
 ## 0.4.2
 
 ### Patch Changes

@@ -63,7 +63,7 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
     announcer.dataset.persist = '';
     html.body.appendChild(announcer);
     if (document.startViewTransition) {
-      await document.startViewTransition(micromorph(document, html))
+      await document.startViewTransition(() => micromorph(document, html))
     } else {
     
     }
