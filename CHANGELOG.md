@@ -1,5 +1,11 @@
 # micromorph
 
+## 0.4.4
+
+### Patch Changes
+
+- 410d14c: Focus body after navigation
+
 ## 0.4.3
 
 ### Patch Changes
