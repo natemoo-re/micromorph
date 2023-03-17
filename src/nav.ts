@@ -49,6 +49,9 @@ export default function createRouter(opts: Options = {}) {
         await micromorph(document, html);
         if (opts.scrollToTop ?? true) {
           window.scrollTo({ top: 0 });
+          if (!document.activeElement?.closest('[data-persist]')) {
+            document.body.focus();
+          }
         }
         await afterDiff();
         delete announcer.dataset.persist;

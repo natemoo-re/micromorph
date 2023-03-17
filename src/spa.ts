@@ -65,7 +65,10 @@ async function navigate(url: URL, isBack: boolean = false, opts: Options) {
     if (document.startViewTransition) {
       await document.startViewTransition(() => micromorph(document, html))
     } else {
-    
+      micromorph(document, html);
+    }
+    if (!document.activeElement?.closest('[data-persist]')) {
+      document.body.focus();
     }
     await afterDiff();
     delete announcer.dataset.persist;
