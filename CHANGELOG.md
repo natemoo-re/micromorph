@@ -1,5 +1,11 @@
 # micromorph
 
+## 0.4.5
+
+### Patch Changes
+
+- 430519d: Fix Vite dev server error by moving cachebust to start of URLSearchParams
+
 ## 0.4.4
 
 ### Patch Changes
