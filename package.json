@@ -28,7 +28,7 @@
     "esbuild": "^0.14.14"
   },
   "volta": {
-    "node": "14.18.3"
+    "node": "18.16.0"
   },
   "license": "MIT"
 }

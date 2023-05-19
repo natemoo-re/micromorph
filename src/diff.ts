@@ -61,9 +61,7 @@ function getKey(el: Element) {
 
 function cachebust(src: string): string {
   const [base, query = ''] = src.split('?');
-  const params = new URLSearchParams(query);
-  params.set('t', `${Date.now()}`)
-  return `${base}?${params}`;
+  return `${base}?t=${Date.now()}&${query.replace(/t=\d+/g, '')}`;
 }
 
 function clone(node: Node) {
