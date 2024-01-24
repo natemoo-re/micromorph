@@ -4,9 +4,18 @@
   "main": "./index.mjs",
   "types": "./types.d.ts",
   "exports": {
-    ".": "./index.mjs",
-    "./spa": "./dist/spa.js",
-    "./nav": "./dist/nav.js"
+    ".": {
+      "import": "./index.mjs",
+      "types": "./index.d.ts"
+    },
+    "./spa": {
+      "import": "./dist/spa.js",
+      "types": "./spa.d.ts"
+    },
+    "./nav": {
+      "import": "./dist/nav.js",
+      "types": "./nav.d.ts"
+    }
   },
   "files": [
     "index.mjs",
